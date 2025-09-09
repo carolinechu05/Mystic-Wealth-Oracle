@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Merienda:wght@300..900&display=swap" rel="stylesheet">
+    <title>Mystic Wealth Oracle</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Mystic Wealth Oracle</h1>
+            <p class="tagline">Secrets Whispered. Destinies Revealed.</p>
+        </header>
+
+        <div class="fortune-section">
+            <div class="crystal-ball" onclick="shakeCrystal()">
+                <div class="crystal"></div>
+            </div>
+
+            <form class="fortune-form" onsubmit="revealFortune(event)">
+                <div class="input-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" required placeholder="Enter your name">
+                </div>
+
+                <div class="input-group">
+                    <label for="dob">Your Birthday</label>
+                    <input type="date" id="dob" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="wealth-source">Your Source of Wealth</label>
+                    <select id="wealth-source" required>
+                        <option value="">Select your empire...</option>
+                        <option value="tech">Technology & Innovation</option>
+                        <option value="real-estate">Real Estate Empire</option>
+                        <option value="finance">Financial Markets</option>
+                        <option value="crypto">Cryptocurrency</option>
+                        <option value="business">Traditional Business</option>
+                        <option value="inheritance">Family Legacy</option>
+                        <option value="entertainment">Entertainment Industry</option>
+                        <option value="other">Other Ventures</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="goal">Your Deepest Desire</label>
+                    <select id="goal" required>
+                        <option value="">What does your heart seek...</option>
+                        <option value="more-wealth">Exponential Wealth Growth</option>
+                        <option value="influence">Global Influence & Power</option>
+                        <option value="legacy">Lasting Legacy</option>
+                        <option value="happiness">True Happiness</option>
+                        <option value="family">Family Harmony</option>
+                        <option value="health">Perfect Health</option>
+                        <option value="wisdom">Ancient Wisdom</option>
+                        <option value="freedom">Ultimate Freedom</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="reveal-button">Reveal My Destiny</button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>The cosmic forces are aligning... Consulting the ancient spirits of wealth...</p>
+            </div>
+
+            <div class="fortune-result" id="fortune-result">
+                <div class="fortune-text" id="fortune-text"></div>
+                <div class="fortune-category" id="fortune-category"></div>
+                <button onclick="exportFortune()" class="export-button">Download My Fortune</button>
+                <button onclick="closeFortune()" class="close-button">✖</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 100;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        function exportFortune() {
+            const text = document.getElementById('fortune-text').innerText;
+            const category = document.getElementById('fortune-category').innerText;
+            const content = `${category}\n\n${text}`;
+            
+            const blob = new Blob([content], { type: "csv" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "my_fortune.csv";
+            link.click();
+        }
+
+        function closeFortune() {
+            document.getElementById('fortune-result').classList.remove('show');
+        }
+
+        // Fortune telling data
+        const fortunes = {
+        'tech': {
+            'more-wealth': "The silicon spirits whisper of a revolutionary AI breakthrough that will multiply your fortune tenfold within two lunar cycles.",
+            'influence': "Your technological empire shall expand beyond earthly bounds - the cosmos itself awaits your digital dominion.",
+            'legacy': "Future generations will speak your name alongside the great innovators, your code eternal as the stars.",
+            'happiness': "True joy lies not in your next IPO, but in the simple pleasure of solving humanity's greatest challenges.",
+            'family': "Disconnect from the digital realm to reconnect with those who matter most - your greatest algorithm is love.",
+            'health': "The blue light of endless screens dims your inner light - seek balance between bytes and breath.",
+            'wisdom': "Ancient knowledge flows through quantum channels - meditate upon the intersection of consciousness and code.",
+            'freedom': "Your wealth is both cage and key - true liberation comes through purposeful creation, not accumulation."
+        },
+        'real-estate': {
+            'more-wealth': "Sacred geometry reveals hidden properties that will transform your portfolio - seek the golden spiral in city layouts.",
+            'influence': "Your domain shall expand beyond mere buildings to shape the very fabric of communities and culture.",
+            'legacy': "The structures you create will house dreams for centuries - build not just property, but possibility.",
+            'happiness': "Find contentment not in square footage owned, but in the homes and hearts you've helped create.",
+            'family': "Your greatest foundation is not concrete and steel, but the love that supports your family dynasty.",
+            'health': "Ground yourself in nature's beauty - even property moguls need more than concrete beneath their feet.",
+            'wisdom': "Ancient builders knew secrets of harmony between structure and spirit - rediscover these timeless truths.",
+            'freedom': "True ownership begins with owning your choices - be the architect of your own liberation."
+        },
+        'finance': {
+            'more-wealth': "The market's hidden patterns align like constellations - a rare convergence approaches that will eclipse all previous gains.",
+            'influence': "Your financial acumen shall reshape global economies - nations will seek your counsel on monetary mysteries.",
+            'legacy': "Your investment philosophy will become the foundation for future financial wisdom - teach, don't just trade.",
+            'happiness': "Remember that the richest accounts cannot purchase the priceless moments that truly matter.",
+            'family': "Your greatest investment is time spent with loved ones - their dividends are measured in memories.",
+            'health': "The stress of markets weighs heavy on the soul - find sanctuary in stillness and meditation.",
+            'wisdom': "Ancient merchants knew that true wealth flows through generosity, not just accumulation.",
+            'freedom': "Break free from the golden handcuffs of endless accumulation - wealth should serve, not enslave you."
+        },
+        'crypto': {
+            'more-wealth': "A mysterious blockchain prophecy speaks of unprecedented returns - but beware the digital sirens' call.",
+            'influence': "Your understanding of decentralized power will reshape global governance - the old systems crumble before you.",
+            'legacy': "You are pioneering humanity's financial evolution - your digital footprints will guide future generations.",
+            'happiness': "The volatility of coins mirrors life itself - find peace in the chaos of constant change.",
+            'family': "Don't lose human connection in pursuit of digital transformation - hearts cannot be mined like coins.",
+            'health': "The endless charts and graphs strain more than eyes - your body craves movement beyond mouse clicks.",
+            'wisdom': "Satoshi's true gift was not currency, but the philosophy of trustless systems - contemplate this deeper meaning.",
+            'freedom': "You seek financial sovereignty, but remember: true freedom transcends any currency, digital or physical."
+        },
+        'business': {
+            'more-wealth': "The ancient guilds smile upon your ventures - your enterprise shall multiply beyond your wildest projections.",
+            'influence': "Your voice will shape boardrooms and nations alike - the marketplace will echo your decisions.",
+            'legacy': "Your company will outlive you, remembered as a dynasty of enterprise and ingenuity.",
+            'happiness': "Balance lies in knowing when to close the ledger and open your heart to simple joys.",
+            'family': "Your family is your true board of directors - nurture their dreams as fiercely as your own.",
+            'health': "The grindstone sharpens but also wears - invest in your vitality as you do your ventures.",
+            'wisdom': "The oldest merchants remind: fair trade builds longer empires than ruthless conquest.",
+            'freedom': "The business you own should not own you - find liberation through delegation and trust."
+        },
+        'inheritance': {
+            'more-wealth': "The ancestral vaults open wider than expected - your legacy multiplies when honored with wisdom.",
+            'influence': "Your lineage grants you authority, but true power comes from how you wield it for others.",
+            'legacy': "You carry the torch of generations - add your flame without dimming theirs.",
+            'happiness': "Do not let golden chains bind your spirit - joy comes from writing your own chapter.",
+            'family': "The greatest treasure of your heritage is the family itself - preserve both fortune and kinship.",
+            'health': "Old wealth sometimes carries old habits - cleanse your body and spirit for renewal.",
+            'wisdom': "The ancestors whisper - their mistakes are your greatest inheritance if you choose to learn.",
+            'freedom': "True inheritance is not possessions, but the freedom to forge your own destiny."
+        },
+        'entertainment': {
+            'more-wealth': "The spotlight brightens, and with it your fortune multiplies - the stage is set for grandeur.",
+            'influence': "Your artistry moves millions - your influence ripples through culture itself.",
+            'legacy': "Your performance will echo beyond time, immortalized in story and song.",
+            'happiness': "Fame is fleeting - true happiness is found in the quiet applause of your own heart.",
+            'family': "Even stars need constellations - surround yourself with loved ones who keep you grounded.",
+            'health': "The lights may dazzle, but they also drain - guard your body and soul amidst the spectacle.",
+            'wisdom': "Every role you play reveals another truth - seek wisdom in the masks you wear.",
+            'freedom': "The stage is your cage and your wings - freedom comes when you choose which stories to tell."
+        },
+        'other': {
+            'more-wealth': "Uncharted ventures hold treasures unseen - fortune favors your unconventional path.",
+            'influence': "Though your journey is unique, it shall inspire countless others to carve their own way.",
+            'legacy': "By daring to be different, you leave behind a legend that defies categorization.",
+            'happiness': "Your heart finds joy not in labels, but in authentic creation of your own story.",
+            'family': "Even off the beaten path, family bonds guide you like stars in the wilderness.",
+            'health': "Your pursuits may be unconventional, but health remains the truest wealth - guard it well.",
+            'wisdom': "The unknown speaks in riddles - trust your intuition where no map exists.",
+            'freedom': "The road less traveled is your birthright - your freedom lies in always choosing it."
+        }
+        };
+
+
+        function shakeCrystal() {
+        const crystal = document.querySelector('.crystal-ball');
+        crystal.classList.add('shake');
+
+        setTimeout(() => {
+            // ensures the shake animation plays once, then resets, so the effect can be triggered again next time
+            crystal.classList.remove('shake');
+        }, 300); 
+        }
+
+
+        function revealFortune(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const dob = document.getElementById('dob').value;
+            const wealthSource = document.getElementById('wealth-source').value;
+            const goal = document.getElementById('goal').value;
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('fortune-result').classList.remove('show');
+            
+            // Simulate mystical calculation time
+            setTimeout(() => {
+                const fortuneText = fortunes[wealthSource] ? 
+                    (fortunes[wealthSource][goal] || "The cosmic forces are unclear... try again with different desires.") :
+                    "The spirits require you to select your wealth source to divine your future.";
+                
+                document.getElementById('fortune-text').innerHTML = 
+                    `"${fortuneText}"`;
+                
+                document.getElementById('fortune-category').innerHTML = 
+                    `Oracle's Wisdom for ${name} • ${new Date().toLocaleDateString()}`;
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('fortune-result').classList.add('show');
+                
+                // Add sparkle effect
+                createSparkles();
+            }, 3000);
+        }
+
+        function createSparkles() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.innerHTML = '✨';
+                    sparkle.style.position = 'fixed';
+                    sparkle.style.left = Math.random() * window.innerWidth + 'px';
+                    sparkle.style.top = Math.random() * window.innerHeight + 'px';
+                    sparkle.style.pointerEvents = 'none';
+                    sparkle.style.zIndex = '1000';
+                    sparkle.style.fontSize = '20px';
+                    sparkle.style.animation = 'sparkle 2s ease-out forwards';
+                    
+                    document.body.appendChild(sparkle);
+                    
+                    setTimeout(() => {
+                        document.body.removeChild(sparkle);
+                    }, 2000);
+                }, i * 100);
+            }
+        }
+
+        // Add sparkle animation to CSS
+        const sparkleCSS = `
+            @keyframes sparkle {
+                0% { opacity: 1; transform: scale(1) translateY(0); }
+                100% { opacity: 0; transform: scale(0.3) translateY(-100px); }
+            }
+        `;
+        const style = document.createElement('style');
+        style.textContent = sparkleCSS;
+        document.head.appendChild(style);
+
+        // Initialize stars when page loads
+        window.addEventListener('load', createStars);
+        
+    </script>
+</body>
+</html>
